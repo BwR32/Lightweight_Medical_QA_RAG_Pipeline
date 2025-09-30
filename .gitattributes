@@ -1,7 +1,7 @@
 D:/学习资料/rag[[:space:]]pipeline/Lightweight[[:space:]]Medical[[:space:]]Q&A[[:space:]]RAG[[:space:]]Pipeline/script/faiss_index/medical_faiss.index filter=lfs diff=lfs merge=lfs -text
 D:/学习资料/rag[[:space:]]pipeline/Lightweight[[:space:]]Medical[[:space:]]Q&A[[:space:]]RAG[[:space:]]Pipeline/script/faiss_index/metadata.json filter=lfs diff=lfs merge=lfs -text
 D:/学习资料/rag[[:space:]]pipeline/Lightweight[[:space:]]Medical[[:space:]]Q&A[[:space:]]RAG[[:space:]]Pipeline/script/local_model/pytorch_model.bin filter=lfs diff=lfs merge=lfs -text
-cleaned_data/** filter=lfs diff=lfs merge=lfs -text
 script/** filter=lfs diff=lfs merge=lfs -text
+cleaned_data/** filter=lfs diff=lfs merge=lfs -text
 multi_model/** filter=lfs diff=lfs merge=lfs -text
 models/** filter=lfs diff=lfs merge=lfs -text
