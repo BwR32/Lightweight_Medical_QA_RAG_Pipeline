@@ -5,3 +5,4 @@ script/** filter=lfs diff=lfs merge=lfs -text
 cleaned_data/** filter=lfs diff=lfs merge=lfs -text
 multi_model/** filter=lfs diff=lfs merge=lfs -text
 models/** filter=lfs diff=lfs merge=lfs -text
+environment.yml filter=lfs diff=lfs merge=lfs -text
