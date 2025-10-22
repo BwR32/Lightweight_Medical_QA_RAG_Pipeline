@@ -106,6 +106,6 @@ if __name__ == "__main__":
     main(query_to_run)
 
 ### 如何使用
-# python simple_rag_query.py -q "我妈妈有高血压，饮食上应该注意些什么？"
+# python rag_query.py -q "我妈妈有高血压，饮食上应该注意些什么？"
         
-# python simple_rag_query.py --query "布洛芬有哪些副作用？"
+# python rag_query.py --query "布洛芬有哪些副作用？"
