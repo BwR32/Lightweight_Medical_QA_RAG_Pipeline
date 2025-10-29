@@ -1,0 +1,89 @@
+# ======================================================================================
+# RAG Pipeline Configuration File
+# ======================================================================================
+# 此文件用于配置RAG Pipeline的各个组件和行为。
+# 修改此文件后，无需更改Python代码即可应用新设置。
+
+# --- 1. 知识库 (Knowledge Base) 与 检索器 (Retriever) 设置 ---
+knowledge_base:
+  # 要加载的知识库版本名称 (对应 faiss_index_... 文件夹的后缀)
+  # 例如: "v1_section_text2vec_base", "v6_recursive_bge-large-zh-v1.5"
+  version: "v5_recursive_bge-large-zh-v1.5"
+  
+  # 知识库文件夹的基础路径 (相对于运行脚本的位置)
+  # 脚本会在此路径后自动追加 "faiss_index_" + version
+  base_path: "./" # 假设faiss_index文件夹与脚本在同一目录
+
+retriever:
+  # 句向量模型缓存文件夹的路径 (相对于运行脚本的位置)
+  # 脚本会从此路径加载与知识库版本匹配的模型
+  model_cache_path: "../models" 
+  
+  # 检索阶段返回的最相关文档数量 (Top-K)
+  top_k: 20
+
+# --- 2. 生成器 (Generator / LLM) 设置 ---
+generator:
+  # 选择要使用的LLM提供商 (目前支持 "deepseek")
+  provider: "deepseek"
+  
+  # --- DeepSeek 特定配置 ---
+  deepseek:
+    # 要使用的具体模型名称
+    model_name: "deepseek-chat"
+    
+    # 存储DeepSeek API密钥的环境变量名称
+    # 脚本会读取名为 'DEEPSEEK_API_KEY' 的环境变量
+    api_key_env_var: "DEEPSEEK_API_KEY"
+    
+    # DeepSeek API的基地址
+    base_url: "https://api.deepseek.com/v1"
+    
+    # LLM生成参数 (可选)
+    temperature: 0.1
+    max_tokens: 2048
+
+# --- 3. Prompt 设置 ---
+prompts:
+  # 选择当前要使用的Prompt模板的键名 (对应下面 templates 中的一个键)
+  active_template: "B_CONCISE"
+
+  # Prompt模板库 (您可以自由添加、修改或删除模板)
+  # 使用 '|' 来允许多行文本
+  templates:
+    A_BASELINE: |
+      你是一个专业、严谨的医疗健康问答助手。请你严格根据下面提供的“背景知识”，用中文、清晰、分点的方式来回答用户的问题。如果“背景知识”中没有足够的信息来回答问题，请明确告知用户：“根据我所掌握的资料，无法回答您的问题。”禁止编造或使用你自己的外部知识。
+    B_CONCISE: |
+      你是一个医疗信息摘要AI。严格根据“背景知识”回答问题。核心规则：1. 绝对忠实于背景知识，禁止外部信息。2. 答案必须简洁至上，直击要点，省略客套话。3. 如果知识不足，只回答：“根据提供的资料，无法回答此问题。”
+    C_STRUCTURED_JSON: |
+      你是一个医疗信息提取AI。请根据“背景知识”和“用户问题”，严格按照以下JSON格式回答：
+      {
+        "is_answerable": (布尔值, true/false),
+        "summary": "(用一句话总结核心答案)",
+        "details": [
+          "(分点陈述详细解释)"
+        ],
+        "disclaimer": "本回答仅供参考，不能替代专业医疗建议。"
+      }
+      如果知识不足，将 "is_answerable" 设为 false。
+    D_EMPATHETIC_DOCTOR: |
+      请扮演一位有耐心、富有同理心的全科医生。你的面前是一位对医学术语不太了解的普通用户。
+      请你仔细阅读下面提供的“背景知识”，然后用最通俗易懂、最口语化的语言来回答“用户问题”。
+      你需要遵守的原则:
+      1.  说人话: 避免复杂术语，或用比喻解释。
+      2.  展现关怀: 在回答的开头或结尾，可以加入一些表示关心和提醒的话语。
+      3.  忠于事实: 你的所有医学解释，都必须严格来源于提供的“背景知识”。
+      4.  承认局限: 如果背景知识不够，请坦诚地告诉用户需要进一步检查。
+
+# --- 4. 输出设置 ---
+output:
+  # 除了最终答案 'final_answer' 之外，还希望Pipeline返回哪些中间信息？
+  # 可能的值: "retrieved_contexts", "retrieval_time", "generation_time", "full_prompt"
+  # 将您需要的信息以列表形式包含在此处。
+  additional_metrics:
+    - "retrieved_contexts"
+    #- "retrieval_time" # 如果需要记录检索耗时
+    # - "generation_time" # 如果需要记录生成耗时
+    #- "full_prompt" # 如果需要查看最终发送给LLM的完整Prompt (用于调试)
+
+# ======================================================================================
