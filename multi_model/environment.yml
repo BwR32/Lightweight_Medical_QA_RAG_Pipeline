@@ -1,0 +1,64 @@
+# ======================================================================================
+# Conda Environment Configuration for RAG Pipeline
+# ======================================================================================
+#
+# 文件名: environment.yml
+#
+# 功能: 定义运行整个RAG Pipeline (包括Streamlit Web界面) 所需的所有Python库及其版本。
+#       使用此文件可以实现环境的“一键部署”，确保在不同机器上
+#       具有完全一致、可复现的运行环境。
+#
+# --- 如何使用 ---
+# 1. 确保已安装 Anaconda 或 Miniconda。
+# 2. 将此文件保存到项目根目录 (RAG PIPELINE/) 或脚本所在目录。
+# 3. 打开终端 (Mac/Linux: Terminal, Windows: Anaconda Prompt)。
+# 4. 导航到此文件所在的目录。
+# 5. 运行以下命令创建新环境:
+#    conda env create -f environment.yml
+#    (这将创建一个名为 rag_final_env 的新环境)
+# 6. 创建成功后，激活环境:
+#    conda activate rag_final_env
+# 7. 现在您可以运行项目中的所有Python脚本了。
+#
+# --- 更新现有环境 ---
+# 如果您已经有一个名为 rag_final_env 的环境，并想根据此文件更新它：
+# conda activate rag_final_env
+# conda env update --file environment.yml --prune
+# (--prune 会移除环境中存在但此文件中未定义的包)
+
+name: rag_final_env # 定义环境的名称
+
+channels:
+  # 定义Conda搜索包的渠道顺序，优先级从上到下
+  - pytorch      # 优先从PyTorch官方渠道获取核心AI库
+  - conda-forge  # 其次从社区渠道获取其他库 (通常包更全、更新更快)
+  - defaults     # 最后使用Anaconda的默认渠道
+
+dependencies:
+  # --- 核心框架 ---
+  - python=3.10        # 指定Python版本，确保兼容性
+
+  # --- AI / 机器学习 / 向量搜索 ---
+  - pytorch>=2.6       # PyTorch (核心AI框架), >=2.6解决安全问题
+  - torchvision      # PyTorch的计算机视觉库 (通常与pytorch一同安装)
+  - faiss-cpu        # Facebook的向量检索引擎 (CPU版本)
+                     # 如果您有NVIDIA GPU并配置了CUDA，可改为 faiss-gpu
+  - sentence-transformers # 用于将文本转换为向量 (包含transformers依赖)
+  - transformers     # Hugging Face的核心库 (会被sentence-transformers自动安装)
+
+  # --- 自然语言处理 (NLP) ---
+  - jieba            # 中文分词库
+  - rouge-chinese    # 用于计算ROUGE评估指标
+
+  # --- 数据处理 / 网络 / 文件 ---
+  - beautifulsoup4 # 用于解析HTML (爬虫阶段使用)
+  - requests       # 用于发送HTTP网络请求 (爬虫阶段使用)
+  - numpy          # 科学计算基础库
+  - pyyaml         # 用于读取YAML配置文件 (config.yaml)
+  - langchain      # 用于更高级的文本切分 (RecursiveCharacterTextSplitter)
+
+  # --- LLM API 客户端 ---
+  - openai           # 用于与DeepSeek API交互 (其API与OpenAI兼容)
+
+  # --- Web界面 ---
+  - streamlit      # Web应用框架
